@@ -1,33 +1,51 @@
-# .NET Core build outputs
+## .NET Core / ASP.NET Core
 bin/
 obj/
-
-# User-specific files
 *.user
 *.suo
-*.userosstate
-*.userprefs
+*.cache
+*.dll
+*.exe
+*.pdb
+*.deps.json
+*.runtimeconfig.json
 
-# Visual Studio files
+## Database files
+*.db
+*.db-shm
+*.db-wal
+app.db
+*.sqlite
+*.sqlite3
+
+## Visual Studio / Rider
 .vs/
-*.code-workspace
+.idea/
+*.sln.docstates
+*.userosscache
+*.sln.docstates
 
-# Build results
+## Build results
 [Dd]ebug/
 [Rr]elease/
 x64/
 x86/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
+[Aa]rm/
+[Aa]rm64/
 bld/
 [Bb]in/
 [Oo]bj/
+[Ll]og/
+[Ll]ogs/
 
-# MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
-# NuGet Packages
+## NuGet Packages
 *.nupkg
 *.snupkg
 **/packages/*
@@ -38,76 +56,69 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
-# Rider
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
+
+## Visual Studio cache/options directory
+.vs/
+
+## Rider
 .idea/
 *.sln.iml
 
-# User secrets (chứa thông tin nhạy cảm như API keys, passwords)
-appsettings.*.local.json
-secrets.json
-*.secrets.json
+## User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
 
-# Environment files (có thể chứa connection strings, API keys)
-.env
-.env.local
-.env.production
-*.local
+## Mono auto generated files
+mono_crash.*
 
-# Logs
-*.log
-logs/
-*.log.*
-
-# Database files (nếu dùng SQLite local)
-*.db
-*.db-shm
-*.db-wal
-*.sqlite
-*.sqlite3
-
-# macOS
-.DS_Store
-
-# Windows
+## Windows image file caches
 Thumbs.db
 ehthumbs.db
+
+## Folder config file
 Desktop.ini
 
-# Visual Studio Code
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## VS Code directories
 .vscode/
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
-# JetBrains Rider
-.idea/
-*.sln.iml
-*.DotSettings.user
+## Mac
+.DS_Store
 
-# Publish profiles (có thể chứa thông tin deploy)
-PublishProfiles/
-*.pubxml
-*.publishproj
+## Sensitive configuration files (uncomment if needed)
+# appsettings.Development.json
+# appsettings.Production.json
+# appsettings.*.json
 
-# Azure Web App publish settings
-*.azurePubxml
-
-# Certificate files (QUAN TRỌNG - không được push)
-*.pfx
-*.p12
-*.key
-*.pem
-*.crt
-*.cer
-
-# Temporary files
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
-
-# macOS Finder
-.AppleDouble
-.LSOverride
