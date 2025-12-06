@@ -126,3 +126,4 @@ D:\asp\demoApi\obj\Debug\net8.0\refint\demoApi.dll
 D:\asp\demoApi\obj\Debug\net8.0\demoApi.pdb
 D:\asp\demoApi\obj\Debug\net8.0\demoApi.genruntimeconfig.cache
 D:\asp\demoApi\obj\Debug\net8.0\ref\demoApi.dll
+D:\asp\demoApi\obj\Debug\net8.0\demoApi.sourcelink.json

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using DemoApi.Models; // Phải import cái Model vừa tạo
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore; // Để dùng ToListAsync
+using DemoApi.Data;
+using DemoApi.Models;
 
 namespace DemoApi.Controllers;
 
@@ -8,84 +9,77 @@ namespace DemoApi.Controllers;
 [Route("api/[controller]")]
 public class DevController : ControllerBase
 {
-    // Giả lập Database (Lưu trên RAM, tắt server là mất)
-    // Phải dùng static để danh sách này được giữ nguyên giữa các lần gọi API
-    private static List<Dev> _devs = new List<Dev>
-    {
-        new Dev { Id = 1, Name = "Thịnh", Level = "Fullstack" },
-        new Dev { Id = 2, Name = "Nam", Level = "Frontend" }
-    };
+    private readonly AppDbContext _context;
 
-    // 1. GET: api/dev (Lấy tất cả)
-    [HttpGet]
-    public IActionResult GetAll()
+    // 1. Dependency Injection: Xin Database từ hệ thống
+    public DevController(AppDbContext context)
     {
-        return Ok(_devs);
+        _context = context;
     }
 
-    // 2. GET: api/dev/{id} (Lấy theo ID)
-    // Ví dụ: api/dev/1
-    [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    // GET: api/dev
+    [HttpGet]
+    public async Task<IActionResult> GetDevelopers()
     {
-        // LINQ: Tìm thằng nào có Id trùng với id truyền vào
-        // Giống: _devs.find(d => d.Id === id) bên JS
-        var dev = _devs.FirstOrDefault(d => d.Id == id);
+        // SELECT * FROM Developers
+        var devs = await _context.Developers.ToListAsync(); 
+        return Ok(devs);
+    }
 
-        if (dev == null)
-        {
-            return NotFound(new { Message = "Không tìm thấy Dev này!" }); // Trả về 404
-        }
+    // GET: api/dev/1
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetDev(int id)
+    {
+        var dev = await _context.Developers.FindAsync(id);
+        if (dev == null) return NotFound();
         return Ok(dev);
     }
 
-    // 3. POST: api/dev (Thêm mới)
-    // Nhận vào một object Dev từ Body của request
+    // POST: api/dev
     [HttpPost]
-    public IActionResult Create(Dev newDev)
+    public async Task<IActionResult> CreateDev(Dev dev)
     {
-        // Tự động tăng ID
-        newDev.Id = _devs.Count + 1;
+        // INSERT INTO Developers VALUES (...)
+        _context.Developers.Add(dev);
         
-        _devs.Add(newDev);
+        // Lệnh này mới thực sự lưu vào DB (Commit)
+        await _context.SaveChangesAsync();
 
-        // Trả về 201 Created và data vừa tạo
-        return CreatedAtAction(nameof(GetById), new { id = newDev.Id }, newDev);
+        return CreatedAtAction(nameof(GetDev), new { id = dev.Id }, dev);
     }
 
-    // 4. PUT: api/dev/{id} (Cập nhật thông tin)
-    // Nhận ID từ URL và thông tin mới từ Body
+    // PUT: api/dev/1
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Dev updatedDev)
+    public async Task<IActionResult> UpdateDev(int id, Dev devUpdate)
     {
-        var dev = _devs.FirstOrDefault(d => d.Id == id);
+        if (id != devUpdate.Id) return BadRequest();
 
-        // Nếu không tìm thấy ID thì báo lỗi 404
-        if (dev == null)
+        // Đánh dấu object này là "đã bị sửa"
+        _context.Entry(devUpdate).State = EntityState.Modified;
+
+        try
         {
-            return NotFound();
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!_context.Developers.Any(e => e.Id == id)) return NotFound();
+            else throw;
         }
 
-        // Cập nhật dữ liệu
-        dev.Name = updatedDev.Name;
-        dev.Level = updatedDev.Level;
-
-        // Trả về 204 No Content (Chuẩn HTTP cho việc sửa/xóa thành công mà không cần trả dữ liệu về)
         return NoContent();
     }
 
-    // 5. DELETE: api/dev/{id} (Xóa sổ)
+    // DELETE: api/dev/1
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> DeleteDev(int id)
     {
-        var dev = _devs.FirstOrDefault(d => d.Id == id);
+        var dev = await _context.Developers.FindAsync(id);
+        if (dev == null) return NotFound();
 
-        if (dev == null)
-        {
-            return NotFound();
-        }
+        _context.Developers.Remove(dev);
+        await _context.SaveChangesAsync();
 
-        _devs.Remove(dev); // Xóa khỏi List
-        return NoContent(); // 204 OK
+        return NoContent();
     }
 }
